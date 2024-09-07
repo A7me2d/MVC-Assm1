@@ -9,15 +9,36 @@ namespace MVC_Assm1
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints => {
+            app.UseEndpoints(endpoints =>
+            {
                endpoints.MapGet("/Home", async context =>
                {
                    await context.Response.WriteAsync("You are at home page");
                });
                
-               endpoints.MapGet("/Products", async context =>
+
+               endpoints.MapGet("/Products/{ID:int?}", async context =>
                {
-                   await context.Response.WriteAsync("you are at Products");
+                   var idData = context.Request.RouteValues["ID"];
+
+                   if(idData is not null)
+                   {
+                       int data = Convert.ToInt32(idData);
+                       await context.Response.WriteAsync($"you are at Products id => {idData}");
+                   }
+                   else
+                   {
+                       await context.Response.WriteAsync($"you are at Products ");
+
+                   }
+               });
+               
+                
+                endpoints.MapGet("/Books/{ID}/{Auther:alpha:minlength(5):maxlength(10)}", async context =>
+               {
+                   int id = Convert.ToInt32(context.Request.RouteValues["ID"]);
+                   string name = context.Request.RouteValues["Auther"].ToString();
+                   await context.Response.WriteAsync($"you are at Books id = {id} , At Auther => {name}");
                });
             });
 
